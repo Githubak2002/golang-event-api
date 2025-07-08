@@ -1,0 +1,36 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of go build
+/build/
+/bin/
+/dist/
+
+# Dependency directories (if not using Go modules)
+vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Docker
+docker-compose.override.yml
+
+# added by ak
+temp
+storage
+/config

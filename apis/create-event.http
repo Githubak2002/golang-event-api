@@ -1,0 +1,9 @@
+POST http://localhost:8080/events
+Content-Type: application/json
+
+{
+  "name": "Test Meeting",
+  "Description": "Test meeting",
+  "location": "MS Teams",
+  "dateTime": "2025-03-04T15:00:00.000Z"
+}
