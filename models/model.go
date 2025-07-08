@@ -2,10 +2,12 @@ package models
 
 import (
 	"time"
+
+	"github.com/githubak2002/golang-event-api/db"
 )
 
 type Event struct {
-	Id          int
+	Id          int64
 	Name        string 	`binding:"required"`  // struct tag in Go, Gin-specific validation tag
 	Description string  `binding:"required"`
 	Location    string	`binding:"required"`
@@ -15,12 +17,44 @@ type Event struct {
 
 var events = []Event{}
 
-func (e Event) Save(){
-	// add it to a DB
-	events = append(events, e)
+func (e Event) Save() error { 
+	// add it to a SQL lite DB
+	query := `
+	INSERT INTO events(name, description, location, dateTime, user_id) 
+	VALUES (?,?,?,?,?)`
+	stmt,err := db.DB.Prepare(query)
+	if err != nil{
+		return err
+	}
+
+	defer stmt.Close()
+	result, err := stmt.Exec(e.Name,e.Description,e.Location,e.DateTime,e.UesrId)
+	if err != nil{
+		return err
+	}
+	id, err := result.LastInsertId()
+	e.Id = id
+	return err
+	// events = append(events, e)
 }
 
-func GetAllEvents () []Event{
-	return events
+func GetAllEvents () ([]Event, error){
+
+	query := `SELECT * FROM events`
+	rows, err := db.DB.Query(query)
+	if err != nil{
+		return nil, err
+	}
+	defer rows.Close()
+	var events []Event
+	for rows.Next(){
+		var event Event
+		err := rows.Scan(&event.Id, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UesrId)
+		if err != nil{
+		return nil, err
+	}
+	events = append(events, event)
+	}
+	return events, nil
 }
 
