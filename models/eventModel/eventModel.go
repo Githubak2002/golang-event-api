@@ -1,4 +1,4 @@
-package models
+package eventModel
 
 import (
 	"time"
@@ -12,7 +12,7 @@ type Event struct {
 	Description string  `binding:"required"`
 	Location    string	`binding:"required"`
 	DateTime    time.Time	`binding:"required"`
-	UesrId      int
+	UserId      int
 }
 
 var events = []Event{}
@@ -22,13 +22,17 @@ func (e Event) Save() error {
 	query := `
 	INSERT INTO events(name, description, location, dateTime, user_id) 
 	VALUES (?,?,?,?,?)`
+
+	// VALUES (?,?,?,?,?)   
+	// SQL statements helps protect against SQL injection.
+
 	stmt,err := db.DB.Prepare(query)
 	if err != nil{
 		return err
 	}
 
 	defer stmt.Close()
-	result, err := stmt.Exec(e.Name,e.Description,e.Location,e.DateTime,e.UesrId)
+	result, err := stmt.Exec(e.Name,e.Description,e.Location,e.DateTime,e.UserId)
 	if err != nil{
 		return err
 	}
@@ -45,16 +49,31 @@ func GetAllEvents () ([]Event, error){
 	if err != nil{
 		return nil, err
 	}
+	
+	// ensures the database connection is closed when the function ends.
 	defer rows.Close()
 	var events []Event
 	for rows.Next(){
 		var event Event
-		err := rows.Scan(&event.Id, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UesrId)
+		err := rows.Scan(&event.Id, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
 		if err != nil{
-		return nil, err
-	}
-	events = append(events, event)
+			return nil, err
+		}
+		events = append(events, event)
 	}
 	return events, nil
 }
+
+func GetEventById (id int64) (*Event, error) {
+	query := `SELECT * FROM events WHERE id = ?`
+	row := db.DB.QueryRow(query, id)
+	var event Event
+	err := row.Scan(&event.Id, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
+	if err != nil{
+		return nil, err
+	}
+	return &event, nil
+}
+
+
 
