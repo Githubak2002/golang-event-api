@@ -1,0 +1,9 @@
+PUT http://localhost:8080/event/3
+Content-Type: application/json
+
+{
+  "name": "Updated Event Name",
+  "description": "This event has been updated",
+  "location": "MS Teams - Online",
+  "dateTime": "2024-07-10T15:30:00Z"
+}

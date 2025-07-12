@@ -30,6 +30,7 @@ func getEvent(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"msg": "Could not parse event Id.",
+			"status": false,
 			"err": err.Error(),
 		})
 		return
@@ -43,10 +44,11 @@ func getEvent(context *gin.Context) {
 		})
 		return
 	}
+
 	context.JSON(http.StatusOK, gin.H{
 		"msg":    "All the events",
 		"status": true,
-		"evente": event,
+		"event": event,
 	})
 
 }
@@ -60,6 +62,7 @@ func createEvents(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"msg": "Could not parse request data",
+			"status": false,
 			"err": err.Error(),
 		})
 		// slog.Info("err: ",err.Error())
@@ -79,4 +82,54 @@ func createEvents(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"msg": "Event created", "event": event})
+}
+
+func updateEvent(context *gin.Context){
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"msg": "Could not parse event Id.",
+			"status": false,
+			"err": err.Error(),
+		})
+		return
+	}
+
+	_, err = eventModel.GetEventById(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "--- Could not fetch the event. --- ",
+			"status": false,
+			"err": err.Error(),
+		})
+		return
+	}
+
+	var updatedEvent eventModel.Event
+	err = context.ShouldBindJSON(&updatedEvent)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"msg": "Could not parse request data.",
+			"status": false,
+			"err": err.Error(),
+		})
+		return
+	}
+
+	updatedEvent.Id = eventId
+	err = updatedEvent.UpdateEvent()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "Could not Update the event.",
+			"status": false,
+			"err": err.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+			"msg": "Event Updated successfully.",
+			"status": true,
+		})
+
 }

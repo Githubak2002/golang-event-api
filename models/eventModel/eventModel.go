@@ -1,6 +1,7 @@
 package eventModel
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/githubak2002/golang-event-api/db"
@@ -14,8 +15,6 @@ type Event struct {
 	DateTime    time.Time	`binding:"required"`
 	UserId      int
 }
-
-var events = []Event{}
 
 func (e Event) Save() error { 
 	// add it to a SQL lite DB
@@ -67,8 +66,10 @@ func GetAllEvents () ([]Event, error){
 func GetEventById (id int64) (*Event, error) {
 	query := `SELECT * FROM events WHERE id = ?`
 	row := db.DB.QueryRow(query, id)
+
 	var event Event
 	err := row.Scan(&event.Id, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
+
 	if err != nil{
 		return nil, err
 	}
@@ -76,4 +77,22 @@ func GetEventById (id int64) (*Event, error) {
 }
 
 
+
+
+
+func (e Event) UpdateEvent() error {
+	query := `
+		UPDATE events
+		SET name = ?, description = ?, location = ?, dateTime = ?
+		WHERE id = ?
+	`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.Id)
+	return err
+}
 
