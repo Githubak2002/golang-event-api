@@ -1,15 +1,12 @@
 package db
 
 import (
-
 	"database/sql"
-	
+
 	// not used directly
 	// _ "github.com/mattn/go-sqlite3"
 
-
 	_ "modernc.org/sqlite"
-
 )
 
 var DB *sql.DB
@@ -35,6 +32,24 @@ func InitDB() {
 }
 
 func createTables() {
+
+	createUesrsTable := `
+	CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		email TEXT NOT NULL UNIQUE,
+		password TEXT NOT NULL
+	);
+	`
+
+	_, err := DB.Exec(createUesrsTable)
+	if err != nil {
+		panic("Could not create 'Users' Table: " + err.Error())
+	}
+
+
+	// log.Println("Result of Exec stmt:", res)    // Result of Exec stmt: {0xc00013a700 0xc00008d700}
+
+
 	createEventsTable := `
 	CREATE TABLE IF NOT EXISTS events (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,13 +57,18 @@ func createTables() {
 		description TEXT NOT NULL,
 		location TEXT NOT NULL,
 		dateTime DATETIME NOT NULL,
-		user_id INTEGER
+		user_id INTEGER,
+		FOREIGN KEY (user_id) REFERENCES users (id)
 	);
 	`
-	_, err := DB.Exec(createEventsTable)
+
+	//NOTE: user_id in events must match an existing id in the users table.
+
+
+
+	_, err = DB.Exec(createEventsTable)
 	if err != nil {
-		panic("Could not create Events Table: " + err.Error())
-		// panic("Could not create Events Table")
+		panic("Could not create 'Event' Table: " + err.Error())
 	}
 }
 

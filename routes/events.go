@@ -5,7 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/githubak2002/golang-event-api/models/eventModel"
+	"github.com/githubak2002/golang-event-api/models/event"
+	// eventModel "github.com/githubak2002/golang-event-api/models/event"
 )
 
 func getEvents(context *gin.Context) {
@@ -98,7 +99,7 @@ func updateEvent(context *gin.Context){
 	_, err = eventModel.GetEventById(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "--- Could not fetch the event. --- ",
+			"msg": "Could not fetch the event.",
 			"status": false,
 			"err": err.Error(),
 		})
@@ -117,10 +118,10 @@ func updateEvent(context *gin.Context){
 	}
 
 	updatedEvent.Id = eventId
-	err = updatedEvent.UpdateEvent()
+	err = updatedEvent.Update()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "Could not Update the event.",
+			"msg": "Could not UPDATE the event.",
 			"status": false,
 			"err": err.Error(),
 		})
@@ -128,8 +129,47 @@ func updateEvent(context *gin.Context){
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-			"msg": "Event Updated successfully.",
-			"status": true,
+		"msg": "Event UPDATED successfully.",
+		"status": true,
+	})
+
+}
+
+func deleteEvent(context *gin.Context) {
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"msg": "Could not parse event Id.",
+			"status": false,
+			"err": err.Error(),
 		})
+		return
+	}
+
+	event, err := eventModel.GetEventById(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "Could not fetch the event.",
+			"status": false,
+			"err": err.Error(),
+		})
+		return
+	}
+
+	err = event.Delete()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "Could not DELETE the event.",
+			"status": false,
+			"err": err.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"msg": "Event DELETED successfully.",
+		"status": true,
+	})
+
 
 }

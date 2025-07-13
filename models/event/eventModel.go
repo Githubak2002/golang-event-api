@@ -1,7 +1,6 @@
 package eventModel
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/githubak2002/golang-event-api/db"
@@ -76,11 +75,7 @@ func GetEventById (id int64) (*Event, error) {
 	return &event, nil
 }
 
-
-
-
-
-func (e Event) UpdateEvent() error {
+func (e Event) Update() error {
 	query := `
 		UPDATE events
 		SET name = ?, description = ?, location = ?, dateTime = ?
@@ -96,3 +91,14 @@ func (e Event) UpdateEvent() error {
 	return err
 }
 
+func (event Event)  Delete() error {
+	query := `DELETE FROM event WHERE id = ?`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+	_, err = stmt.Exec(event.Id)
+	return err
+}
