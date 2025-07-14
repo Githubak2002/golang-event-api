@@ -41,6 +41,7 @@ func getEvent(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"msg": "Could not fetch event.",
+			"status": false,
 			"err": err.Error(),
 		})
 		return
@@ -55,6 +56,7 @@ func getEvent(context *gin.Context) {
 }
 
 func createEvents(context *gin.Context) {
+
 	var event eventModel.Event
 
 	// It reads the JSON body from the incoming request.
@@ -70,19 +72,41 @@ func createEvents(context *gin.Context) {
 		return
 	}
 
-	event.Id = 1
-	event.UserId = 1
+	userIdValue, exists := context.Get("userId")
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"msg":    "User ID not found in context",
+			"status": false,
+		})
+		return
+	}
+
+	userId, ok := userIdValue.(int64)
+	if !ok {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"msg":    "User ID has invalid type",
+			"status": false,
+		})
+		return
+	}
+
+	event.UserId = userId
 
 	err = event.Save()
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"msg": "Could not create event. Try again later!",
+			"status": false,
 			"err": err.Error(),
 		})
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"msg": "Event created", "event": event})
+	context.JSON(http.StatusCreated, gin.H{
+		"msg": "Event created", 
+		"status": true,
+		"event": event,
+	})
 }
 
 func updateEvent(context *gin.Context){

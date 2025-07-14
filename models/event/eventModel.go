@@ -12,10 +12,10 @@ type Event struct {
 	Description string  `binding:"required"`
 	Location    string	`binding:"required"`
 	DateTime    time.Time	`binding:"required"`
-	UserId      int
+	UserId      int64
 }
 
-func (e Event) Save() error { 
+func (event *Event) Save() error { 
 	// add it to a SQL lite DB
 	query := `
 	INSERT INTO events(name, description, location, dateTime, user_id) 
@@ -30,12 +30,12 @@ func (e Event) Save() error {
 	}
 
 	defer stmt.Close()
-	result, err := stmt.Exec(e.Name,e.Description,e.Location,e.DateTime,e.UserId)
+	result, err := stmt.Exec(event.Name,event.Description,event.Location,event.DateTime,event.UserId)
 	if err != nil{
 		return err
 	}
 	id, err := result.LastInsertId()
-	e.Id = id
+	event.Id = id
 	return err
 	// events = append(events, e)
 }
@@ -75,7 +75,7 @@ func GetEventById (id int64) (*Event, error) {
 	return &event, nil
 }
 
-func (e Event) Update() error {
+func (event Event) Update() error {
 	query := `
 		UPDATE events
 		SET name = ?, description = ?, location = ?, dateTime = ?
@@ -87,12 +87,12 @@ func (e Event) Update() error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.Id)
+	_, err = stmt.Exec(event.Name, event.Description, event.Location, event.DateTime, event.Id)
 	return err
 }
 
 func (event Event)  Delete() error {
-	query := `DELETE FROM event WHERE id = ?`
+	query := `DELETE FROM events WHERE id = ?`
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
 		return err

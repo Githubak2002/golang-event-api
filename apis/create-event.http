@@ -1,9 +1,12 @@
 POST http://localhost:8080/events
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFraGVyZUBjLmluIiwiZXhwIjoxNzUyNDk0MjMxLCJ1c2VySWQiOjN9.7l5IB02Q5AiCK8gnaOQ-mjC0O0jTh-kC-Th46phsNgc       
+# token missing
+# Authorization:        
 
 {
-  "name": "Demo Meeting ",
-  "description": "Demo meeting 3",
-  "location": "MS Teams - Online",
-  "dateTime": "2025-04-12T15:00:00Z"
+  "name": "DataOps Meeting 1",
+  "description": "DataOps CICD Meeting 2",
+  "location": "Office - In person",
+  "dateTime": "2025-05-10T16:11:00Z"
 }
