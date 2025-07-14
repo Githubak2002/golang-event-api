@@ -5,8 +5,23 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFraGVyZUBjLmlu
 # Authorization:        
 
 {
-  "name": "DataOps Meeting 1",
-  "description": "DataOps CICD Meeting 2",
-  "location": "Office - In person",
+  "name": "DevOps Stand",
+  "description": "DevOps Stand Meeting",
+  "location": "MS Teams - Online",
   "dateTime": "2025-05-10T16:11:00Z"
 }
+
+# {
+#   "name": "Updated Event Name",
+#   "description": "This event has been updated",
+#   "location": "MS Teams - Online",
+#   "dateTime": "2024-07-10T15:30:00Z",
+# }
+
+# {
+#   "Id": 4,
+#   "Name": "Demo Meeting 1",
+#   "Description": "Demo Meeting 1",
+#   "Location": "ZOOM - online",
+#   "DateTime": "2025-03-02T16:11:00Z",
+# }

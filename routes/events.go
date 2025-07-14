@@ -68,29 +68,11 @@ func createEvents(context *gin.Context) {
 			"status": false,
 			"err": err.Error(),
 		})
-		// slog.Info("err: ",err.Error())
 		return
 	}
 
-	userIdValue, exists := context.Get("userId")
-	if !exists {
-		context.JSON(http.StatusUnauthorized, gin.H{
-			"msg":    "User ID not found in context",
-			"status": false,
-		})
-		return
-	}
-
-	userId, ok := userIdValue.(int64)
-	if !ok {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"msg":    "User ID has invalid type",
-			"status": false,
-		})
-		return
-	}
-
-	event.UserId = userId
+	userIdFromToken := context.GetInt64("userId")
+	event.UserId = userIdFromToken
 
 	err = event.Save()
 
@@ -120,12 +102,22 @@ func updateEvent(context *gin.Context){
 		return
 	}
 
-	_, err = eventModel.GetEventById(eventId)
+	userIdFromToken := context.GetInt64("userId")
+	event, err := eventModel.GetEventById(eventId)
+
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "Could not fetch the event.",
 			"status": false,
 			"err": err.Error(),
+		})
+		return
+	}
+
+	if userIdFromToken != event.UserId {
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "Unauthorized user to UPDATE the event.",
+			"status": false,
 		})
 		return
 	}
@@ -170,12 +162,21 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
+	userIdFromToken := context.GetInt64("userId")
 	event, err := eventModel.GetEventById(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "Could not fetch the event.",
 			"status": false,
 			"err": err.Error(),
+		})
+		return
+	}
+
+	if event.UserId != userIdFromToken{
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "Unauthorized user to DELETE the event.",
+			"status": false,
 		})
 		return
 	}
