@@ -7,9 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/githubak2002/golang-event-api/db"
 	"github.com/githubak2002/golang-event-api/routes"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	err := godotenv.Load()
+	if err != nil{
+		panic("Error loading .env file")
+	}
 
 	db.InitDB()
 

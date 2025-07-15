@@ -2,33 +2,47 @@ package utils
 
 import (
 	"errors"
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const secretKey = "JWTSuperSecretKeyByAk"
-
 func GenerateToken(emial string, userId int64) (string, error) {
+
+	// getting JWT_secret from env
+	secretKey := os.Getenv("JWT_SECRET")
+	if secretKey == "" {
+		return "", fmt.Errorf("JWT_SECRET not set in environment")
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email" : emial,
-		"userId" : userId,
-		"exp": time.Now().Add(time.Hour*2).Unix(),
+		"email":  emial,
+		"userId": userId,
+		"exp":    time.Now().Add(time.Hour * 2).Unix(),
 	})
 
 	return token.SignedString([]byte(secretKey))
+
 }
 
+func ValidToken(token string) (int64, error) {
+	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 
-func ValidToken (token string) (int64, error) {
-	parsedToken, err :=	jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		_,ok := t.Method.(*jwt.SigningMethodHMAC)
+		// getting JWT_secret from env
+		secretKey := os.Getenv("JWT_SECRET")
+		if secretKey == "" {
+			return "", fmt.Errorf("JWT_SECRET not set in environment")
+		}
+		
+		_, ok := t.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
 			return nil, errors.New("unexpected SignIn Method")
 		}
 		return []byte(secretKey), nil
 	})
-	if err != nil{
+	if err != nil {
 		return 0, errors.New("could not Parse token")
 	}
 

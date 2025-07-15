@@ -1,14 +1,14 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFraGVyZUBjLmluIiwiZXhwIjoxNzUyNDk0MjMxLCJ1c2VySWQiOjN9.7l5IB02Q5AiCK8gnaOQ-mjC0O0jTh-kC-Th46phsNgc       
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRldmFrQGMuaW4iLCJleHAiOjE3NTI1MDE3NDMsInVzZXJJZCI6NH0.aYhD-kIEuep34KhaAH5sVXlXCz5cEoory4Chm-dSFiI     
 # token missing
 # Authorization:        
 
 {
-  "name": "DevOps Stand",
-  "description": "DevOps Stand Meeting",
+  "name": "Dev Team Meeting",
+  "description": "Dev Team Meeting",
   "location": "MS Teams - Online",
-  "dateTime": "2025-05-10T16:11:00Z"
+  "dateTime": "2025-06-03T19:34:00Z"
 }
 
 # {
