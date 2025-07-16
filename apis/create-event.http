@@ -1,14 +1,14 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRldmFrQGMuaW4iLCJleHAiOjE3NTI1MDE3NDMsInVzZXJJZCI6NH0.aYhD-kIEuep34KhaAH5sVXlXCz5cEoory4Chm-dSFiI     
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRldmFrQGMuaW4iLCJleHAiOjE3NTI1NjI1MzUsInVzZXJJZCI6NH0.eS-qdtPLDSZHlWVTgWtDzOg-9x__OdvVo7JI0VIIqmA  
 # token missing
 # Authorization:        
 
 {
-  "name": "Dev Team Meeting",
-  "description": "Dev Team Meeting",
-  "location": "MS Teams - Online",
-  "dateTime": "2025-06-03T19:34:00Z"
+  "name": "Data Team Meeting",
+  "description": "Data Team Meeting - Using expired Token",
+  "location": "Office - In person",
+  "dateTime": "2025-03-28T19:34:00Z"
 }
 
 # {

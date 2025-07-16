@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	// "log"
 	"os"
 	"time"
 
@@ -21,6 +22,7 @@ func GenerateToken(emial string, userId int64) (string, error) {
 		"email":  emial,
 		"userId": userId,
 		"exp":    time.Now().Add(time.Hour * 2).Unix(),
+		// "exp":    time.Now().Add(time.Minute * 1).Unix(),
 	})
 
 	return token.SignedString([]byte(secretKey))
@@ -29,7 +31,6 @@ func GenerateToken(emial string, userId int64) (string, error) {
 
 func ValidToken(token string) (int64, error) {
 	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-
 		// getting JWT_secret from env
 		secretKey := os.Getenv("JWT_SECRET")
 		if secretKey == "" {
@@ -42,9 +43,13 @@ func ValidToken(token string) (int64, error) {
 		}
 		return []byte(secretKey), nil
 	})
+
 	if err != nil {
+		// log.Println("Error: ",err.Error())
 		return 0, errors.New("could not Parse token")
 	}
+
+
 
 	isTokenValid := parsedToken.Valid
 	if !isTokenValid {

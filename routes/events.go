@@ -39,7 +39,7 @@ func getEvent(context *gin.Context) {
 
 	event, err := eventModel.GetEventById(eventId)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
+		context.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "Could not fetch event.",
 			"status": false,
 			"err": err.Error(),

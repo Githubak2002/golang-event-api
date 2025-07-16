@@ -38,15 +38,11 @@ func createTables() {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
-	);
-	`
-
+	);`
 	_, err := DB.Exec(createUesrsTable)
 	if err != nil {
 		panic("Could not create 'Users' Table: " + err.Error())
 	}
-
-
 	// log.Println("Result of Exec stmt:", res)    // Result of Exec stmt: {0xc00013a700 0xc00008d700}
 
 
@@ -59,16 +55,23 @@ func createTables() {
 		dateTime DATETIME NOT NULL,
 		user_id INTEGER,
 		FOREIGN KEY (user_id) REFERENCES users (id)
-	);
-	`
-
-	//NOTE: user_id in events must match an existing id in the users table.
-
-
-
+	);`
 	_, err = DB.Exec(createEventsTable)
 	if err != nil {
 		panic("Could not create 'Event' Table: " + err.Error())
+	}
+	//NOTE: user_id in events must match an existing id in the users table.
+
+	createRegistrationTable := `
+	CREATE TABLE IF NOT EXISTS registration (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		event_id INTEGER,
+		user_id INTEGER,
+		FOREIGN KEY (event_id) REFERENCES events (id),
+		FOREIGN KEY (user_id) REFERENCES users (id)
+	);` 
+	if _, err = DB.Exec(createRegistrationTable); err != nil{
+		panic("Could not create 'Registration' Table: " + err.Error())
 	}
 }
 
